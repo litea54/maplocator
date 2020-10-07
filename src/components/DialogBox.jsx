@@ -1,4 +1,5 @@
 import React from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import {
   Box,
   Button,
@@ -14,19 +15,6 @@ import {
   ArrowForward,
   ArrowDownward,
 } from '@material-ui/icons';
-
-const arrowProps = {
-  bgcolor: 'background.paper',
-  m: 1,
-  style: { width: '5rem', height: '5rem' },
-  justifyContent: 'center',
-  alignItems: 'center',
-  borderColor: 'text.primary',
-};
-
-const iconProps = {
-  style: { width: '5rem', height: '5rem' },
-};
 
 const RowBox = (props) => {
   const { children } = props;
@@ -76,6 +64,51 @@ export default class DialogBox extends React.Component {
   render() {
     const { open, onClose, onSubmit } = this.props;
 
+    const ArrowBox = (props) => {
+      const { char } = props;
+      const classes = makeStyles({
+        root: { width: '5rem', height: '5rem' },
+      })();
+
+      const ArrowIcon = () => {
+        switch (char) {
+          case 'u':
+            return (<ArrowUpward className={classes.root} />);
+          case 'l':
+            return (<ArrowBack className={classes.root} />);
+          case 'r':
+            return (<ArrowForward className={classes.root} />);
+          case 'd':
+            return (<ArrowDownward className={classes.root} />);
+          default:
+            return null;
+        }
+      };
+
+      return (
+        <Box
+          bgcolor="background.paper"
+          m={1}
+          className={classes.root}
+          justifyContent="center"
+          alignItems="center"
+          borderColor="text.primary"
+        >
+          { (char)
+          && (
+            <IconButton
+              style={{ padding: 0 }}
+              color={this.defineColor(char)}
+              onClick={() => this.changeDirect(char)}
+              disabled={(this.props.dirs.includes(char))}
+            >
+              <ArrowIcon />
+            </IconButton>
+          )}
+        </Box>
+      );
+    };
+
     return (
       <Dialog
         open={open}
@@ -86,55 +119,15 @@ export default class DialogBox extends React.Component {
         <DialogTitle id="form-dialog-title">Choose directions</DialogTitle>
         <DialogContent>
           <RowBox>
-            <Box {...arrowProps}>
-              <IconButton
-                style={{ padding: 0 }}
-                color={this.defineColor('u')}
-                onClick={() => this.changeDirect('u')}
-                alt="UP"
-                disabled={(this.props.dirs.includes('u'))}
-              >
-                <ArrowUpward {...iconProps} />
-              </IconButton>
-            </Box>
+            <ArrowBox char="u" />
           </RowBox>
           <RowBox>
-            <Box {...arrowProps}>
-              <IconButton
-                style={{ padding: 0 }}
-                color={this.defineColor('l')}
-                onClick={() => this.changeDirect('l')}
-                alt="LEFT"
-                disabled={(this.props.dirs.includes('l'))}
-              >
-                <ArrowBack {...iconProps} />
-              </IconButton>
-            </Box>
-            <Box {...arrowProps} />
-            <Box {...arrowProps}>
-              <IconButton
-                style={{ padding: 0 }}
-                color={this.defineColor('r')}
-                onClick={() => this.changeDirect('r')}
-                alt="RIGHT"
-                disabled={(this.props.dirs.includes('r'))}
-              >
-                <ArrowForward {...iconProps} />
-              </IconButton>
-            </Box>
+            <ArrowBox char="l" />
+            <ArrowBox />
+            <ArrowBox char="r" />
           </RowBox>
           <RowBox>
-            <Box {...arrowProps}>
-              <IconButton
-                style={{ padding: 0 }}
-                color={this.defineColor('d')}
-                onClick={() => this.changeDirect('d')}
-                alt="DOWN"
-                disabled={(this.props.dirs.includes('d'))}
-              >
-                <ArrowDownward {...iconProps} />
-              </IconButton>
-            </Box>
+            <ArrowBox char="d" />
           </RowBox>
         </DialogContent>
         <DialogActions>

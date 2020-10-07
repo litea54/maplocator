@@ -97,10 +97,9 @@ export default function MapTable(props) {
 
   const defineStyle = (cell) => {
     if (position.rindex === cell.rindex && position.cindex === cell.cindex) {
-      return classes.tds
-    } else {
-      return isMarked(cell) ? (classes.tdm) : (classes.tdv)
+      return classes.tds;
     }
+    return isMarked(cell) ? (classes.tdm) : (classes.tdv);
   };
 
   return (

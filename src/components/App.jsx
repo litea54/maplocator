@@ -1,5 +1,6 @@
 import React from 'react';
-import { Box } from '@material-ui/core';
+import { Box, IconButton } from '@material-ui/core';
+import { Undo, Redo } from '@material-ui/icons';
 import MapTable from './MapTable';
 import DialogBox from './DialogBox';
 
@@ -56,28 +57,25 @@ const addColumn = (array, rindex, cindex) => {
 
 const findCellsToMark = (baseArray, findArray) => {
   const resultArray = [];
+  let cells;
   const emptyChars = ['', '9'];
 
   for (let r = 0; r < baseArray.length - findArray.length + 1; r += 1) {
     for (let c = 0; c < baseArray[r].length - findArray[0].length + 1; c += 1) {
       let isFind = true;
-      let cells = [];
+      cells = [];
 
       for (let i = 0; i < findArray.length - 2 && isFind; i += 1) {
         for (let j = 0; j < findArray[i].length - 2 && isFind; j += 1) {
           if (findArray[i + 1][j + 1] !== '' && baseArray[r + i + 1][c + j + 1] === '') { isFind = false; }
-          if (( (emptyChars.includes(findArray[i][j + 1])
-                &&
-                !emptyChars.includes(baseArray[r + i][c + j + 1]))
+          if (((emptyChars.includes(findArray[i][j + 1])
+                && !emptyChars.includes(baseArray[r + i][c + j + 1]))
              || (emptyChars.includes(findArray[i + 2][j + 1])
-                &&
-                !emptyChars.includes(baseArray[r + i + 2][c + j + 1]))
+                && !emptyChars.includes(baseArray[r + i + 2][c + j + 1]))
              || (emptyChars.includes(findArray[i + 1][j])
-                &&
-                !emptyChars.includes(baseArray[r + i + 1][c + j]))
+                && !emptyChars.includes(baseArray[r + i + 1][c + j]))
              || (emptyChars.includes(findArray[i + 1][j + 2])
-                &&
-                !emptyChars.includes(baseArray[r + i + 1][c + j + 2]))
+                && !emptyChars.includes(baseArray[r + i + 1][c + j + 2]))
           ) && findArray[i + 1][j + 1] === '1') { isFind = false; }
 
           if (findArray[i + 1][j + 1] !== '' && baseArray[r + i + 1][c + j + 1] !== '') {
@@ -105,12 +103,13 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      confirmedData: rows,
-      rawData: rows1,
       isDialogOpen: false,
+      history: [{
+        rawData: rows1.slice(),
+      }],
+      stepNumber: 0,
       availableDirs: '',
       position: {},
-      markedCells: [],
     };
     this.toggleDialog = this.toggleDialog.bind(this);
     this.doOpenDialog = this.doOpenDialog.bind(this);
@@ -119,7 +118,8 @@ export default class App extends React.Component {
 
   doOpenDialog(pos) {
     this.setState((state) => {
-      const { rawData, isDialogOpen } = state;
+      const { history, isDialogOpen, stepNumber } = state;
+      const { rawData } = history[stepNumber];
       let dirs = '';
 
       if (!isDialogOpen) {
@@ -146,9 +146,9 @@ export default class App extends React.Component {
   submitDialog(value) {
     // change rawData
     this.setState((state) => {
-      let { position } = state;
-      const { availableDirs } = state;
-      const rawData = state.rawData.slice();
+      const { position, availableDirs, stepNumber } = state;
+      const history = state.history.slice(0, stepNumber + 1);
+      const rawData = history[stepNumber].rawData.map((row) => row.slice());
 
       if (!availableDirs.includes('u') && value.includes('u')) {
         if (position.rindex === 1) {
@@ -181,22 +181,43 @@ export default class App extends React.Component {
       rawData[position.rindex][position.cindex] = '1';
 
       return {
-        rawData,
         position,
         isDialogOpen: false,
-        markedCells: findCellsToMark(rows, rawData),
+        history: history.concat([{
+          rawData,
+        }]),
+        stepNumber: history.length,
+      };
+    });
+  }
+
+  jumpTo(step) {
+    this.setState((state) => {
+      const { history, stepNumber } = state;
+      return {
+        stepNumber: (step >= 0 && step < history.length) ? step : stepNumber,
       };
     });
   }
 
   render() {
     const {
-      confirmedData, rawData, isDialogOpen, availableDirs, markedCells,
+      isDialogOpen, availableDirs, history, stepNumber,
     } = this.state;
+
+    const confirmedData = rows;
+    const { rawData } = history[stepNumber];
+    let markedCells = [];
+    if (stepNumber > 0) { markedCells = findCellsToMark(confirmedData, rawData); }
 
     return (
       <Box display="flex" flexWrap="wrap" width="100%">
-        <Box display="flex" flexGrow={1} flexShrink={0} alignItems="center">
+        <Box m={1}>
+          <IconButton color="primary" onClick={() => this.jumpTo(stepNumber - 1)}>
+            <Undo fontSize="large" />
+          </IconButton>
+        </Box>
+        <Box display="flex" m={1} flexGrow={1} flexShrink={0} alignItems="center">
           <MapTable data={rawData} onClick={this.doOpenDialog} />
           <DialogBox
             open={isDialogOpen}
@@ -204,6 +225,11 @@ export default class App extends React.Component {
             onClose={this.toggleDialog}
             dirs={availableDirs}
           />
+        </Box>
+        <Box m={1}>
+          <IconButton color="primary" onClick={() => this.jumpTo(stepNumber + 1)}>
+            <Redo fontSize="large" />
+          </IconButton>
         </Box>
         <Box m={1} flexShrink={0}>
           <MapTable
