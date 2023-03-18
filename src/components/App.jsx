@@ -1,6 +1,6 @@
-import React from 'react';
-import { Box, IconButton } from '@material-ui/core';
-import { Undo, Redo } from '@material-ui/icons';
+import * as React from 'react';
+import { Box, IconButton } from '@mui/material';
+import { Undo, Redo } from '@mui/icons-material';
 import MapTable from './MapTable';
 import DialogBox from './DialogBox';
 

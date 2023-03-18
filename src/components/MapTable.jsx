@@ -1,56 +1,44 @@
 import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-// import {, withStyles } from '@material-ui/core/styles';
-import { TableContainer, Box } from '@material-ui/core';
+import { styled } from '@mui/material/styles';
+import { TableContainer, Box } from '@mui/material';
 
-const tableStyle = {
-  table: {
-    borderCollapse: 'collapse',
-    background: '#1B1B1B',
-    '& th': {
-      width: '20px',
+const Table = styled('table')({
+  borderCollapse: 'collapse',
+  background: '#1B1B1B',
+  fontSize: '8pt',
+  '& th': {
+    width: '20px',
+    height: '20px',
+    padding: 1,
+    border: '#999999 1px solid',
+    // fontSize: '8pt',
+    color: '#ffffff',
+  },
+  '& td': {
+    width: '20px',
+    height: '20px',
+    '& div': {
+      width: '100%',
+      height: '100%',
+      textAlign: 'center',
+      fontWeight: 'bold',
+    },
+    '& button': {
+      minWidth: '20px',
       height: '20px',
       padding: 1,
-      border: '#999999 1px solid',
-      fontSize: '8pt',
-      color: '#ffffff',
+      textAlign: 'center',
+      fontWeight: 'bold',
     },
-    '& td': {
-      width: '20px',
-      height: '20px',
-      '& div': {
-        width: '100%',
-        height: '100%',
-        textAlign: 'center',
-        fontWeight: 'bold',
-      },
-      '& button': {
-        minWidth: '20px',
-        height: '20px',
-        padding: 1,
-        textAlign: 'center',
-        fontWeight: 'bold',
-      },
-    },
-  },
-  tdv: {
-    border: '1px solid',
-    background: '#a0a8bf',
-  },
-  tds: {
-    border: '1px solid',
-    background: '#fbeab2',
-  },
-  tdm: {
-    border: '1px solid',
-    background: '#a52a2a',
-  },
-};
+  }
+});
 
 const Cell = (props) => {
   const {
     rindex, cindex, isRowHeader, isCellHeader, style, children, onClick,
   } = props;
+
+  const TD = styled('td')(style);
 
   return (
     <>
@@ -65,11 +53,11 @@ const Cell = (props) => {
                   {children === ''
                     ? <td />
                     : (
-                      <td className={style}>
+                      <TD>
                         <Box onClick={onClick}>
                           {(children !== '1') ? children : ' ' }
                         </Box>
-                      </td>
+                      </TD>
                     )}
                 </>
               )}
@@ -82,7 +70,20 @@ const Cell = (props) => {
 export default function MapTable(props) {
   const [position, setPosition] = useState({});
   const { data, markedCells, onClick } = props;
-  const classes = makeStyles(tableStyle)();
+  const classes = {
+    tdv: {
+      border: '1px solid',
+      background: '#a0a8bf',
+    },
+    tds: {
+      border: '1px solid',
+      background: '#fbeab2',
+    },
+    tdm: {
+      border: '1px solid',
+      background: '#a52a2a',
+    },
+  } 
 
   const handleClick = (value, rindex, cindex) => {
     setPosition({ rindex, cindex });
@@ -104,7 +105,7 @@ export default function MapTable(props) {
 
   return (
     <TableContainer align="center">
-      <table className={classes.table}>
+      <Table>
         <tbody>
           {(data || []).map((row, rindex) => (
             <tr key={rindex}>
@@ -124,7 +125,7 @@ export default function MapTable(props) {
             </tr>
           ))}
         </tbody>
-      </table>
+      </Table>
     </TableContainer>
   );
 }

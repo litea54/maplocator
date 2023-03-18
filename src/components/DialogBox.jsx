@@ -1,5 +1,5 @@
-import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
+import * as React from 'react';
+// import { styled } from '@mui/material/styles';
 import {
   Box,
   Button,
@@ -8,13 +8,13 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
-} from '@material-ui/core';
+} from '@mui/material';
 import {
   ArrowUpward,
   ArrowBack,
   ArrowForward,
   ArrowDownward,
-} from '@material-ui/icons';
+} from '@mui/icons-material';
 
 const RowBox = (props) => {
   const { children } = props;
@@ -66,20 +66,20 @@ export default class DialogBox extends React.Component {
 
     const ArrowBox = (props) => {
       const { char } = props;
-      const classes = makeStyles({
+      const classes = {
         root: { width: '5rem', height: '5rem' },
-      })();
+      };
 
       const ArrowIcon = () => {
         switch (char) {
           case 'u':
-            return (<ArrowUpward className={classes.root} />);
+            return (<ArrowUpward sx={classes.root} />);
           case 'l':
-            return (<ArrowBack className={classes.root} />);
+            return (<ArrowBack sx={classes.root} />);
           case 'r':
-            return (<ArrowForward className={classes.root} />);
+            return (<ArrowForward sx={classes.root} />);
           case 'd':
-            return (<ArrowDownward className={classes.root} />);
+            return (<ArrowDownward sx={classes.root} />);
           default:
             return null;
         }
@@ -89,7 +89,7 @@ export default class DialogBox extends React.Component {
         <Box
           bgcolor="background.paper"
           m={1}
-          className={classes.root}
+          sx={classes.root}
           justifyContent="center"
           alignItems="center"
           borderColor="text.primary"
