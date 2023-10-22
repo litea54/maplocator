@@ -114,7 +114,7 @@ export default class DialogBox extends React.Component {
         open={open}
         onClose={onClose}
         aria-labelledby="form-dialog-title"
-        onEnter={this.handleEnter}
+        // onEnter={this.handleEnter}
       >
         <DialogTitle id="form-dialog-title">Choose directions</DialogTitle>
         <DialogContent>

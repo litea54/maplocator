@@ -1,7 +1,13 @@
 {
   "name": "maplocator",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },    
   "dependencies": {
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
@@ -9,18 +15,11 @@
     "@mui/material": "^5.11.13",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-scripts": "^5.0.1"
+    "next": "^13.5.6"
   },
-  "scripts": {
-    "start": "react-scripts start",
-    "start_bak": "BROWSER=none react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "lint": "$(npm bin)/eslint "
-  },
-  "eslintConfig": {
-    "extends": "react-app"
+  "devDependencies": {
+    "eslint": "^8",
+    "eslint-config-next": "13.5.5"
   },
   "browserslist": {
     "production": [

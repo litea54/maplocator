@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { styled } from '@mui/material/styles';
 import { TableContainer, Box } from '@mui/material';
+import { viewableValues } from '../components/tools';
 
 const Table = styled('table')({
   borderCollapse: 'collapse',
@@ -50,12 +51,13 @@ const Cell = (props) => {
               ? <th>{rindex}</th>
               : (
                 <>
-                  {children === ''
+                  {children === 0
                     ? <td />
                     : (
                       <TD>
                         <Box onClick={onClick}>
-                          {(children !== '1') ? children : ' ' }
+                          {/* {(children !== 2) ? children : '' } */}
+                          {viewableValues[children] || children}
                         </Box>
                       </TD>
                     )}
@@ -117,9 +119,9 @@ export default function MapTable(props) {
                   isRowHeader={rindex === 0 || rindex === data.length - 1}
                   isCellHeader={cindex === 0 || cindex === row.length - 1}
                   style={defineStyle({ rindex, cindex })}
-                  onClick={() => handleClick(value, rindex, cindex)}
+                  onClick={() => handleClick(value.f, rindex, cindex)}
                 >
-                  {value}
+                  {value.f}
                 </Cell>
               ))}
             </tr>
