@@ -1,22 +1,29 @@
 const viewableValues = {
   1: 'T1',
   2: ' ',
-  3: 'T3',
+  3: 'T',
+  6: 'K6',
   9: 'C',
   5: 'In',
 };
 
+class DataCell {
+  constructor(field=0, comment="") {
+    this.f = field;
+    this.comment = comment;
+  }
+};
+
 const addRow = (array, rindex) => {
     array.splice(rindex, 0, array[rindex].slice());
-    // array[rindex].fill({"f":0}); //, 1, array[rindex].length - 1);
+    array[rindex].fill(new DataCell()); //, 1, array[rindex].length - 1);
     return array.length;
 };
 
 const addColumn = (array, rindex, cindex) => {
     array.forEach((row, index) => {
-        let elem = {"f":0};
         // if (index === 0 || index === array.length - 1) { elem = {"f":0}; }
-        row.splice(cindex, 0, elem);
+        row.splice(cindex, 0, new DataCell());
     });
     return array[rindex].length;
 };
@@ -67,6 +74,7 @@ const findCellsToMark = (baseArray, findArray) => {
 
 module.exports = {
     viewableValues,
+    DataCell, 
     addRow,
     addColumn,
     findCellsToMark,

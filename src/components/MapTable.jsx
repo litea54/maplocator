@@ -36,7 +36,7 @@ const Table = styled('table')({
 
 const Cell = (props) => {
   const {
-    rindex, cindex, isRowHeader, isCellHeader, style, children, onClick,
+    rindex, cindex, isRowHeader, isCellHeader, style, children, onClick, onMouseMove,
   } = props;
 
   const TD = styled('td')(style);
@@ -52,11 +52,10 @@ const Cell = (props) => {
               : (
                 <>
                   {children === 0
-                    ? <td />
+                    ? <td/>
                     : (
-                      <TD>
-                        <Box onClick={onClick}>
-                          {/* {(children !== 2) ? children : '' } */}
+                      <TD onClick={onClick} onMouseMove={onMouseMove}>
+                        <Box>
                           {viewableValues[children] || children}
                         </Box>
                       </TD>
@@ -70,12 +69,16 @@ const Cell = (props) => {
 };
 
 export default function MapTable(props) {
-  const [position, setPosition] = useState({});
-  const { data, markedCells, onClick } = props;
+  const { data, markedCells, onClick, globalPosition } = props;
+  const [position, setPosition] = useState(globalPosition);
+  const [hovered, setHovered] = useState({});
+  if (globalPosition && (position.rindex !== globalPosition.rindex || position.cindex !== globalPosition.cindex)) {
+    setPosition(globalPosition);
+  }
   const classes = {
     tdv: {
       border: '1px solid',
-      background: '#a0a8bf',
+      background: '#666666',
     },
     tds: {
       border: '1px solid',
@@ -84,6 +87,10 @@ export default function MapTable(props) {
     tdm: {
       border: '1px solid',
       background: '#a52a2a',
+    },
+    tdh: {
+      border: '1px solid',
+      background: '#a0a8bf',
     },
   } 
 
@@ -99,8 +106,11 @@ export default function MapTable(props) {
   );
 
   const defineStyle = (cell) => {
-    if (position.rindex === cell.rindex && position.cindex === cell.cindex) {
+    if (position && position.rindex === cell.rindex && position.cindex === cell.cindex) {
       return classes.tds;
+    }
+    if (hovered && hovered.rindex === cell.rindex && hovered.cindex === cell.cindex) {
+      return classes.tdh;
     }
     return isMarked(cell) ? (classes.tdm) : (classes.tdv);
   };
@@ -113,15 +123,16 @@ export default function MapTable(props) {
             <tr key={rindex}>
               {(row || []).map((value, cindex) => (
                 <Cell
-                  key={rindex + cindex}
+                  key={rindex*row.length + cindex}
                   rindex={rindex}
                   cindex={cindex}
                   isRowHeader={rindex === 0 || rindex === data.length - 1}
                   isCellHeader={cindex === 0 || cindex === row.length - 1}
                   style={defineStyle({ rindex, cindex })}
                   onClick={() => handleClick(value.f, rindex, cindex)}
+                  onMouseMove={() => setHovered( {rindex, cindex} )}
                 >
-                  {value.f}
+                  { value.comment? value.comment: value.f }
                 </Cell>
               ))}
             </tr>

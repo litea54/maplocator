@@ -10,6 +10,17 @@ const nextConfig = {
 
     // Optional: Change the output directory `out` -> `dist`
     distDir: 'build',
+    images: {
+        unoptimized: true, 
+        remotePatterns: [
+        {
+            protocol: 'https',
+            hostname: 'chaosage.ru',
+            port: '',
+            pathname: '/images/**',
+        },
+        ],
+  },
 }
 
 module.exports = nextConfig

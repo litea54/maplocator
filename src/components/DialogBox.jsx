@@ -1,4 +1,5 @@
 import * as React from 'react';
+import Image from 'next/image';
 // import { styled } from '@mui/material/styles';
 import {
   Box,
@@ -65,9 +66,9 @@ export default class DialogBox extends React.Component {
     const { open, onClose, onSubmit } = this.props;
 
     const ArrowBox = (props) => {
-      const { char } = props;
+      const { char, bgcolor, children } = props;
       const classes = {
-        root: { width: '5rem', height: '5rem' },
+        root: { width: '7rem', height: '7rem' },
       };
 
       const ArrowIcon = () => {
@@ -87,15 +88,16 @@ export default class DialogBox extends React.Component {
 
       return (
         <Box
-          bgcolor="background.paper"
+          bgcolor={bgcolor}
           m={1}
           sx={classes.root}
           justifyContent="center"
           alignItems="center"
-          borderColor="text.primary"
+          borderRadius={"40%"}
+          // borderColor="text.primary"
         >
-          { (char)
-          && (
+          { (char)?
+          (
             <IconButton
               style={{ padding: 0 }}
               color={this.defineColor(char)}
@@ -104,11 +106,13 @@ export default class DialogBox extends React.Component {
             >
               <ArrowIcon />
             </IconButton>
+          ) : (
+            children
           )}
         </Box>
       );
     };
-
+    
     return (
       <Dialog
         open={open}
@@ -123,7 +127,14 @@ export default class DialogBox extends React.Component {
           </RowBox>
           <RowBox>
             <ArrowBox char="l" />
-            <ArrowBox />
+            <ArrowBox bgcolor="text.primary">
+              <Image 
+                src="https://chaosage.ru/images/crypt/compass/north.gif"
+                alt="Compass"
+                width={112}
+                height={112}
+              />
+            </ArrowBox>
             <ArrowBox char="r" />
           </RowBox>
           <RowBox>
